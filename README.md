@@ -1,3 +1,12 @@
+# This is not official
+
+Original procedures are
+
+- https://pleasanter.org/ja/manual/getting-started-pleasanter-docker
+- https://pleasanter.org/ja/manual/change-parameters-at-docker-image
+- https://pleasanter.org/ja/manual/setup-by-docker-image-and-mysql
+
+
 # How to use
 
 ```
