@@ -1,0 +1,47 @@
+services:
+  db:
+    container_name: mysql
+    image: mysql:8.4
+    environment:
+      - MYSQL_ROOT_PASSWORD
+    volumes:
+      - type: volume
+        source: my_data
+        target: /var/lib/mysql
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    healthcheck:
+        test: mysqladmin ping -h 127.0.0.1 -u root -p${MYSQL_ROOT_PASSWORD}
+        interval: 10s
+        timeout: 10s
+        retries: 6
+  pleasanter:
+    build:
+      context: .
+      dockerfile: ./Pleasanter/Dockerfile
+      args:
+        - VERSION=${PLEASANTER_VER}
+    container_name: pleasanter_${PLEASANTER_VER}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - '50001:8080'
+    environment:
+      Implem.Pleasanter_Rds_MySQL_SaConnectionString: ${Implem_Pleasanter_Rds_MySQL_SaConnectionString}
+      Implem.Pleasanter_Rds_MySQL_OwnerConnectionString: ${Implem_Pleasanter_Rds_MySQL_OwnerConnectionString}
+      Implem.Pleasanter_Rds_MySQL_UserConnectionString: ${Implem_Pleasanter_Rds_MySQL_UserConnectionString}
+  codedefiner:
+    build:
+      context: .
+      dockerfile: ./CodeDefiner/Dockerfile
+    container_name: codedefiner
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      Implem.Pleasanter_Rds_MySQL_SaConnectionString: ${Implem_Pleasanter_Rds_MySQL_SaConnectionString}
+      Implem.Pleasanter_Rds_MySQL_OwnerConnectionString: ${Implem_Pleasanter_Rds_MySQL_OwnerConnectionString}
+      Implem.Pleasanter_Rds_MySQL_UserConnectionString: ${Implem_Pleasanter_Rds_MySQL_UserConnectionString}
+volumes:
+  my_data:
+    name: ${COMPOSE_PROJECT_NAME:-default}_my_data_volume
