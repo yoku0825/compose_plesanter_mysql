@@ -1,0 +1,16 @@
+# How to use
+
+```
+git clone https://github.com/yoku0825/compose_plesanter_mysql.git
+cd compose_plesanter_mysql
+
+docker compose pull
+docker compose build
+docker compose run --rm codedefiner _rds /l ja /z Asia/Tokyo
+docker compose up -d pleasanter
+```
+
+# Caveats
+
+This repository including irresponsible HARD-CODED password.
+Testing purpose only.
